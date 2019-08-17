@@ -1,19 +1,40 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Teasting React with Jest, Enzyme and Cypress
 
-## Unit Tests
+## Features
 
-Please write appropriate units test for the `src/App.js` application and its components into the `src/App.spec.js` file using mocha.
+- React
+- Webpack
+- Testing
+  - Jest + Enzyme: Unit/Integration + Snapshot Test
+  - E2E Tests: Cypress
+  
+## Installation
 
-The applications full functionality needs to be tested, as well as click events simulated, via unit/integration tests.
+- `git clone https://github.com/thomast74/testing-react.git`
+- cd testing-react
+- npm install
+- npm start
+- visit `http://localhost:8080/`
+- npm test
+- npm test:cypress
 
-There is a simple (not working) backend call in the App component, this needs to be tested as part of the unit/integration tests.
+## Write test that fully tests the small app
 
-Running tests via `npm run test:unit` provides you feedback.
+Testing should cover the full functionality of the application, good path and not so happy path need to be considered.
 
-# Snapshot Testing
+All tests have to written in the file `App.spec.js`, which currently is empty.
 
-Write snapshot tests for the two components the application offers into `src/App.snapshot.js`. This test can be executed via `npm run test:snapshot`.
+The application is already setup so nothing else than the test itself need to be written.
 
-# E2E Testing
+The following are topics to be considered:
+- Reducer is fully tested
+- Components are snaphot tested
+- Components are rendered with properties
+- Buttons are tested
+- Data fetching is tested
 
-The application should be tested E2E via cypress in the file `cypress/integration/App.e2e.js`. This test can be executed via `npm run cypress`
+
+## Write E2e tests with cypress
+
+The E2e test should cover all functionalities that application offers and should be written into the file `cypress/integration/App.e2e.js`.
+This file is currently empty.

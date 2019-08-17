@@ -1,73 +1,68 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
-import './App.css';
 
-
-export const doIncrement = (prevState) => ({
-  counter: prevState.counter + 1
-});
-
-export const doDecrement = (prevState) => ({
-  counter: prevState.counter - 1
-});
-
-
-class App extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      counter: 0,
-      asyncCounters: null,
-      fetchError: null
-    };
-
-    this.onIncrement = this.onIncrement.bind(this);
-    this.onDecrement = this.onDecrement.bind(this);
+export const dataReducer = (state, action) => {
+  if (action.type === 'SET_ERROR') {
+    return { ...state, list: [], error: true };
   }
 
-  componentDidMount() {
-    axios.get('http://mydomain/counter')
-      .then(response => this.setState({ asyncCounters: response.data }))
-      .catch(error => this.setState({ fetchError: error.message }));
+  if (action.type === 'SET_LIST') {
+    return { ...state, list: action.list, error: null };
   }
 
-  onIncrement() {
-    this.setState(doIncrement);
-  }
+  throw new Error();
+};
 
-  onDecrement() {
-    this.setState(doDecrement);
-  }
+const initialData = {
+  list: [],
+  error: null,
+};
 
-  render() {
-    const { counter } = this.state;
+const App = () => {
+  const [counter, setCounter] = React.useState(0);
+  const [data, dispatch] = React.useReducer(dataReducer, initialData);
 
-    return (
-      <div className="App">
-        <h1>My Counter</h1>
-        <Counter counter={counter} />
+  React.useEffect(() => {
+    axios
+      .get('http://hn.algolia.com/api/v1/search?query=react')
+      .then(response => {
+        dispatch({ type: 'SET_LIST', list: response.data.hits });
+      })
+      .catch(() => {
+        dispatch({ type: 'SET_ERROR' });
+      });
+  }, []);
 
-        <button
-          type="button"
-          onClick={this.onIncrement}
-        >
-          Increment
-        </button>
-        <button
-          type="button"
-          onClick={this.onDecrement}
-        >
-          Decrement
-        </button>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <h1>My Counter</h1>
+      <Counter counter={counter} />
 
+      <button type="button" onClick={() => setCounter(counter + 1)}>
+        Increment
+      </button>
 
-export const Counter = ({ counter }) => 
-  <p>{counter}</p>
+      <button type="button" onClick={() => setCounter(counter - 1)}>
+        Decrement
+      </button>
 
+      <h2>My Async Data</h2>
+
+      {data.error && <div className="error">Error</div>}
+
+      <ul>
+        {data.list.map(item => (
+          <li key={item.objectID}>{item.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export const Counter = ({ counter }) => (
+  <div>
+    <p>{counter}</p>
+  </div>
+);
 
 export default App;
